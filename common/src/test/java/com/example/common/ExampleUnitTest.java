@@ -1,5 +1,7 @@
 package com.example.common;
 
+import androidx.annotation.NonNull;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -13,5 +15,14 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
+    }
+
+    @Test
+    public void test(){
+        System.out.println(testA(null,""));
+    }
+
+    private String testA(@NonNull String a, String b){
+        return "aaa";
     }
 }

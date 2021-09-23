@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <SurfaceView
+        android:id="@+id/sv_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.king.zxing.ViewfinderView
+        android:id="@+id/vfv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cornerColor="@color/color_4E5BCD"
+        app:cornerRectHeight="54dp"
+        app:cornerRectWidth="4dp"
+        app:frameColor="@color/color_4E5BCD"
+        app:frameHeight="242dp"
+        app:frameWidth="242dp"
+        app:labelText="请扫描智慧码"
+        app:labelTextColor="@color/color_ffffff"
+        app:labelTextLocation="bottom"
+        app:labelTextPadding="18dp"
+        app:labelTextSize="16sp"
+        app:laserColor="@color/color_4E5BCD"
+        app:maskColor="@color/color_80000000"
+        app:scannerLineHeight="4dp" />
+
+    <TextView
+        android:id="@+id/tv_torch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:drawableTop="@drawable/selector_torch"
+        android:drawablePadding="12dp"
+        android:gravity="center"
+        android:text="打开照明"
+        android:textColor="@color/color_ffffff"
+        android:textSize="26sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="HardCodedText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
