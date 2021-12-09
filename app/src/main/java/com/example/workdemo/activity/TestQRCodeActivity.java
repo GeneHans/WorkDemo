@@ -1,12 +1,19 @@
-package com.example.workdemo;
+package com.example.workdemo.activity;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.SurfaceView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.viewbinding.ViewBinding;
+
 import com.example.common.base.BaseActivity;
+import com.example.common.util.Logger;
+import com.example.workdemo.R;
+import com.example.workdemo.databinding.ActivityTestQRCodeBinding;
 import com.king.zxing.CaptureHelper;
 import com.king.zxing.DecodeFormatManager;
 import com.king.zxing.OnCaptureCallback;
@@ -14,23 +21,20 @@ import com.king.zxing.ViewfinderView;
 import com.king.zxing.camera.CameraManager;
 import com.king.zxing.camera.FrontLightMode;
 
-public class TestQRCodeActivity extends BaseActivity implements OnCaptureCallback{
+public class TestQRCodeActivity extends BaseActivity<ActivityTestQRCodeBinding> implements OnCaptureCallback{
 
-    private ViewfinderView vfv;
     private CaptureHelper captureHelper;
-    private SurfaceView svPreview;
-    private TextView tvTorch;
-    Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test_q_r_code);
-        vfv = findViewById(R.id.vfv);
-        svPreview = findViewById(R.id.sv_preview);
-        tvTorch = findViewById(R.id.tv_torch);
-        activity = this;
-        captureHelper = new CaptureHelper(this, svPreview,vfv,null);
+        //权限申请
+        String[] permissions = new String[]{
+                Manifest.permission.CAMERA
+        };
+        super.requestPermission(permissions,100);
+
+        captureHelper = new CaptureHelper(this, binding.svPreview,binding.vfv,null);
         captureHelper.setOnCaptureCallback(this);
         captureHelper.decodeFormats(DecodeFormatManager.QR_CODE_FORMATS)
                 .supportAutoZoom(true) // 自动缩放
@@ -45,11 +49,34 @@ public class TestQRCodeActivity extends BaseActivity implements OnCaptureCallbac
                 .onCreate();
         CameraManager cameraManager = captureHelper.getCameraManager();
         cameraManager.setOnTorchListener((torch) -> {
-            tvTorch.setSelected(torch);
-            tvTorch.setText(torch ? "关闭照明" : "打开照明");
+            binding.tvTorch.setSelected(torch);
+            binding.tvTorch.setText(torch ? "关闭照明" : "打开照明");
         });
-        tvTorch.setOnClickListener(v ->
-                cameraManager.setTorch(!tvTorch.isSelected()));
+        binding.tvTorch.setOnClickListener(v ->
+                cameraManager.setTorch(!binding.tvTorch.isSelected()));
+        binding.tvTorch.post(this::updateScanFrameLocation);
+    }
+
+    @Override
+    protected ActivityTestQRCodeBinding setBinding() {
+        return ActivityTestQRCodeBinding.inflate(getLayoutInflater());
+    }
+
+    private void updateScanFrameLocation() {
+//        int top = tvTorch.getTop();
+//        int bottom = svPreview.getBottom();
+//        int paddingBottom = (bottom - top)/2;
+//        vfv.setPadding(0, 0, 0, paddingBottom);
+        int temp = (327+184)/2-184;
+        Logger.d(temp+"");
+        binding.vfv.setPadding(0, 0, 0, dp2px(this,temp));
+        binding.vfv.scannerStart = 0; // 动态改变padding时，需要设置该值为0，以触发在onDraw中对其的重新赋值
+    }
+
+    public static int dp2px(Context context, int dpVal) {
+        if (context == null) return 0;
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpVal * scale + 0.5f);
     }
 
     @Override
