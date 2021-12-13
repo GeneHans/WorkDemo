@@ -1,23 +1,17 @@
 package com.example.workdemo.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.SurfaceView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.viewbinding.ViewBinding;
 
 import com.example.common.base.BaseActivity;
 import com.example.common.util.Logger;
-import com.example.workdemo.R;
+import com.example.common.util.PermissionManager;
 import com.example.workdemo.databinding.ActivityTestQRCodeBinding;
 import com.king.zxing.CaptureHelper;
 import com.king.zxing.DecodeFormatManager;
 import com.king.zxing.OnCaptureCallback;
-import com.king.zxing.ViewfinderView;
 import com.king.zxing.camera.CameraManager;
 import com.king.zxing.camera.FrontLightMode;
 
@@ -28,12 +22,6 @@ public class TestQRCodeActivity extends BaseActivity<ActivityTestQRCodeBinding> 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //权限申请
-        String[] permissions = new String[]{
-                Manifest.permission.CAMERA
-        };
-        super.requestPermission(permissions,100);
-
         captureHelper = new CaptureHelper(this, binding.svPreview,binding.vfv,null);
         captureHelper.setOnCaptureCallback(this);
         captureHelper.decodeFormats(DecodeFormatManager.QR_CODE_FORMATS)
@@ -107,5 +95,23 @@ public class TestQRCodeActivity extends BaseActivity<ActivityTestQRCodeBinding> 
     public boolean onResultCallback(String result) {
         Toast.makeText(this, result, Toast.LENGTH_LONG).show();
         return false;
+    }
+
+    private void checkCameraPermission(){
+        //权限申请
+        String[] permissions = new String[]{
+                Manifest.permission.CAMERA
+        };
+        super.requestPermission(permissions, new PermissionManager.PermissionCallback() {
+            @Override
+            public void onPermissionGranted(String[] permissions) {
+
+            }
+
+            @Override
+            public void onPermissionDenied(String[] permissions) {
+                finish();
+            }
+        });
     }
 }

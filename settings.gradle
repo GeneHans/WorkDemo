@@ -1,3 +1,6 @@
 include ':common'
 include ':app'
+include ':apt_lib'
+include ':annotationTest'
+include ':processorTest'
 rootProject.name = "WorkDemo"

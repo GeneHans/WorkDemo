@@ -23,6 +23,8 @@ public class SensorController {
     private float lastY = 0f;
     private float lastZ = 0f;
     private long lastTime = 0;
+    //判断是否初始化成功
+    private boolean isInitPosition = false;
     private SensorEventListener listener;
     private ISensorCallBack iSensorCallBack;
 
@@ -40,6 +42,7 @@ public class SensorController {
     private void initSensorController(Context context) {
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        lastTime = System.currentTimeMillis();
         listener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
@@ -50,6 +53,14 @@ public class SensorController {
                     }
                     //读取传感器监听到加速度 m/(s^2)
                     float[] values = event.values;
+                    if(!isInitPosition){
+                        //手机的状态不同，其x,y,z的值不同，重新对x,y,z赋值
+                        lastX = values[0];
+                        lastY = values[1];
+                        lastZ = values[2];
+                        //仅限在初始化赋值
+                        isInitPosition = true;
+                    }
                     float x = values[0];
                     float y = values[1];
                     float z = values[2];

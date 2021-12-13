@@ -43,6 +43,12 @@ dependencies {
 //    implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
 
     implementation project(':common') // 添加依赖模块
+    implementation project(':annotationTest') // 添加依赖模块
+    implementation project(':apt_lib') // 添加依赖模块
+
+    implementation project(':processorTest') // 添加依赖模块
+    annotationProcessor project(':processorTest')
+
     //AndroidX版本
     implementation 'com.king.zxing:zxing-lite:1.1.9-androidx'
 //    implementation 'com.google.zxing:core:3.3.0'

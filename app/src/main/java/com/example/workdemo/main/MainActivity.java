@@ -1,10 +1,11 @@
 package com.example.workdemo.main;
 
+import android.app.DownloadManager;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,7 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.example.common.base.BaseActivity;
+import com.example.common.manager.DownloadFileManager;
 import com.example.common.util.Logger;
+import com.example.common.util.PermissionManager;
+import com.example.workdemo.ConstData;
+import com.example.workdemo.activity.AnnotationTestActivity;
 import com.example.workdemo.activity.TestQRCodeActivity;
 import com.example.workdemo.databinding.ActivityMainBinding;
 
@@ -26,13 +31,36 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
     private void initMainPageAdapter(){
         MainPageAdapter adapter = new MainPageAdapter();
         adapter.addData(new MainListEntity("二维码扫描","二维码扫描页简易demo，利用zxing-lite实现"));
+        adapter.addData(new MainListEntity("DownloadManager","Android自带的下载工具DownLoadManager测试"));
+        adapter.addData(new MainListEntity("APT测试","利用APT实现BindView效果"));
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 Logger.d(position+"");
                 switch (position){
-                    case 0:{
+                    case ConstData.QR_CODE: {
                         startQRCode();
+                    }
+                    case ConstData.DOWNLOAD_MANAGER: {
+                        if(!PermissionManager.checkPermissions(activity,PermissionManager.ReadAndWritePermissions)){
+                            MainActivity.super.requestPermission(PermissionManager.ReadAndWritePermissions, new PermissionManager.PermissionCallback() {
+                                @Override
+                                public void onPermissionGranted(String[] permissions) {
+                                    DownloadFileManager.download(activity, DownloadFileManager.testUrl);
+                                    MainActivity.this.registerReceiver(DownloadFileManager.receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                                }
+
+                                @Override
+                                public void onPermissionDenied(String[] permissions) {
+                                    Toast.makeText(activity,"无权限",Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                    case ConstData.ANNOTATION:{
+                        Intent intent = new Intent();
+                        intent.setClass(activity, AnnotationTestActivity.class);
+                        startActivity(intent);
                     }
                 }
             }
