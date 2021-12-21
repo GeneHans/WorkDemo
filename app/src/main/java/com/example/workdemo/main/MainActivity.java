@@ -14,6 +14,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.example.common.base.BaseActivity;
 import com.example.common.manager.DownloadFileManager;
+import com.example.common.manager.DownloadUtils;
 import com.example.common.util.Logger;
 import com.example.common.util.PermissionManager;
 import com.example.workdemo.ConstData;
@@ -40,6 +41,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
                 switch (position){
                     case ConstData.QR_CODE: {
                         startQRCode();
+                        break;
                     }
                     case ConstData.DOWNLOAD_MANAGER: {
                         if(!PermissionManager.checkPermissions(activity,PermissionManager.ReadAndWritePermissions)){
@@ -50,17 +52,26 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
                                     MainActivity.this.registerReceiver(DownloadFileManager.receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
                                 }
 
-                                @Override
+                                 @Override
                                 public void onPermissionDenied(String[] permissions) {
                                     Toast.makeText(activity,"无权限",Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
+                        else{
+                            Logger.d("开启文件下载");
+                            DownloadUtils downloadUtils = new DownloadUtils(activity,DownloadFileManager.testUrl,"2.3.5.apk");
+                            downloadUtils.startDownLoad();
+//                            DownloadFileManager.download(activity, DownloadFileManager.testUrl);
+//                            MainActivity.this.registerReceiver(DownloadFileManager.receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                        }
+                        break;
                     }
                     case ConstData.ANNOTATION:{
                         Intent intent = new Intent();
                         intent.setClass(activity, AnnotationTestActivity.class);
                         startActivity(intent);
+                        break;
                     }
                 }
             }

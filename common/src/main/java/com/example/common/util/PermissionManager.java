@@ -41,7 +41,7 @@ public class PermissionManager {
      * @return true：都存在  false：有不存在的权限
      */
     public static boolean checkPermissions(Context context, String[] permissions) {
-        boolean hasPermissions = false;
+        boolean hasPermissions = true;
         if (permissions == null || permissions.length == 0)
             return hasPermissions;
         for (String permission : permissions) {
