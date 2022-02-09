@@ -22,6 +22,13 @@ public class PermissionManager {
     public static String[] ReadAndWritePermissions = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE};
+    //工程内的位置权限
+    public static String[] LocationPermissions = {
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+            Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS
+    };
 
     /**
      * 检查是否存在某项权限

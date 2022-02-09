@@ -17,19 +17,26 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Poi;
+import com.amap.api.navi.AmapNaviPage;
+import com.amap.api.navi.AmapNaviParams;
+import com.amap.api.navi.AmapNaviType;
+import com.amap.api.navi.AmapPageType;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.example.common.ConstData;
 import com.example.common.base.BaseActivity;
 import com.example.common.manager.DownloadFileManager;
 import com.example.common.manager.DownloadUtils;
 import com.example.common.util.Logger;
 import com.example.common.util.PermissionManager;
-import com.example.common.ConstData;
 import com.example.workdemo.activity.AnnotationTestActivity;
 import com.example.workdemo.activity.TestQRCodeActivity;
 import com.example.workdemo.databinding.ActivityMainBinding;
 import com.example.workdemo2.IMyAidlInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends BaseActivity<ActivityMainBinding> {
@@ -51,7 +58,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         adapter.addData(new MainListEntity("DownloadManager", "Android自带的下载工具DownLoadManager测试"));
         adapter.addData(new MainListEntity("APT测试", "利用APT实现BindView效果"));
         adapter.addData(new MainListEntity("AIDL测试", "AIDL通讯测试，Client逻辑"));
-        adapter.addData(new MainListEntity("Socket测试","测试Socket连接"));
+        adapter.addData(new MainListEntity("Socket测试", "测试Socket连接"));
+        adapter.addData(new MainListEntity("导航测试", "高德导航SDK接入测试"));
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
@@ -99,7 +107,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
                         break;
                     }
                     case ConstData.SOCKET_IM: {
+                    }
 
+                    case ConstData.GAODE_MAP: {
+                        goToNavi(true);
+//                        openMap();
                         break;
                     }
                 }
@@ -107,7 +119,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         });
         binding.mainList.setAdapter(adapter);
         binding.mainList.setLayoutManager(new LinearLayoutManager(this));
-
     }
 
     /**
@@ -165,6 +176,45 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         return explicitIntent;
     }
 
+
+    private void openMap() {
+        if (!PermissionManager.checkPermissions(this, PermissionManager.LocationPermissions)) {
+            MainActivity.super.requestPermission(PermissionManager.LocationPermissions, new PermissionManager.PermissionCallback() {
+                @Override
+                public void onPermissionGranted(String[] permissions) {
+                    goToNavi(true);
+                }
+
+                @Override
+                public void onPermissionDenied(String[] permissions) {
+                    Toast.makeText(activity, "权限未打开", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            goToNavi(true);
+        }
+    }
+
+    private void goToNavi(boolean hasDes) {
+        if (hasDes) {
+            //起点
+            Poi start = new Poi("北京首都机场", new LatLng(40.080525, 116.603039), "");
+            //途经点
+            List<Poi> poiList = new ArrayList();
+            poiList.add(new Poi("故宫", new LatLng(39.918058, 116.397026), ""));
+            //终点
+            Poi end = new Poi("北京大学", new LatLng(39.941823, 116.426319), "");
+            // 组件参数配置
+            AmapNaviParams params = new AmapNaviParams(start, poiList, end, AmapNaviType.DRIVER, AmapPageType.ROUTE);
+            // 启动组件
+            AmapNaviPage.getInstance().showRouteActivity(getApplicationContext(), params, null);
+        } else {
+            //构建导航组件配置类，没有传入起点，所以起点默认为 “我的位置”
+            AmapNaviParams params = new AmapNaviParams(null, null, null, AmapNaviType.DRIVER, AmapPageType.ROUTE);
+            //启动导航组件
+            AmapNaviPage.getInstance().showRouteActivity(getApplicationContext(), params, null);
+        }
+    }
 
     @Override
     protected ActivityMainBinding setBinding() {

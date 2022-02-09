@@ -6,6 +6,15 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
+    signingConfigs {
+        release {
+            storeFile file('/Users/hangang/TestWork/WorkDemo/test_key.jks')
+            keyAlias 'key0'
+            keyPassword '123456'
+            storePassword '123456'
+        }
+    }
+
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 30
@@ -14,6 +23,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+        signingConfig signingConfigs.release
     }
 
     buildTypes {

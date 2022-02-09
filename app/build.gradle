@@ -3,17 +3,44 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/Users/hangang/TestWork/WorkDemo/test_key.jks')
+            keyPassword '123456'
+            keyAlias 'key0'
+            storePassword '123456'
+        }
+        productFlavors{
+            xian {
+                buildConfigField "long", "APP_BUILD_TIME", System.currentTimeMillis() + "L"
+
+                buildConfigField "String", "APP_BUILD_CHANNEL", "\"xian\""
+
+                buildConfigField("boolean", "TEST_MODE", "false")
+            }
+            zhengzhou {
+                buildConfigField "long", "APP_BUILD_TIME", System.currentTimeMillis() + "L"
+
+                buildConfigField "String", "APP_BUILD_CHANNEL", "\"zhengzhou\""
+
+                buildConfigField("boolean", "TEST_MODE", "true")
+            }
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.example.workdemo"
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+        flavorDimensions "versionCode"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
@@ -48,6 +75,12 @@ dependencies {
 
     implementation project(':processorTest') // 添加依赖模块
     annotationProcessor project(':processorTest')
+
+    //高德导航SDK
+    implementation 'com.amap.api:navi-3dmap:latest.integration'
+
+//    compile 'com.android.support:multidex:1.0.1'
+
 
     //AndroidX版本
     implementation 'com.king.zxing:zxing-lite:1.1.9-androidx'
