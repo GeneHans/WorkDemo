@@ -11,4 +11,9 @@ public class ConstData {
     public static final int AIDL_TEST = 3;
     //Socket长连接测试
     public static final int SOCKET_IM = 4;
+
+    //Socket连接的IP
+    public static final String INTENT_IP = "";
+    //Socket连接的端口号
+    public static final String INTENT_PORT = "";
 }
