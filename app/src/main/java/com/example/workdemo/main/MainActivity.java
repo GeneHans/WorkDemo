@@ -35,6 +35,7 @@ import com.example.workdemo.activity.AnnotationTestActivity;
 import com.example.workdemo.activity.TestQRCodeActivity;
 import com.example.workdemo.databinding.ActivityMainBinding;
 import com.example.workdemo2.IMyAidlInterface;
+import com.example.workdemo2.People;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
     }
 
     private String data = "no data";
+    private People testPeople = new People(0,"no people");
 
     private void initMainPageAdapter() {
         MainPageAdapter adapter = new MainPageAdapter();
@@ -99,11 +101,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
                         if (iMyAidlInterface != null) {
                             try {
                                 data = iMyAidlInterface.getName();
+                                testPeople = iMyAidlInterface.getPeople();
                             } catch (RemoteException e) {
                                 e.printStackTrace();
                             }
                         }
-                        Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, testPeople.toString(), Toast.LENGTH_SHORT).show();
+                        Logger.d(testPeople.toString());
                         break;
                     }
                     case ConstData.SOCKET_IM: {
